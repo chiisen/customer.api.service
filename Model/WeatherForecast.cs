@@ -1,4 +1,4 @@
-namespace customer.api.service;
+namespace customer.api.service.Model;
 
 public class WeatherForecast
 {
