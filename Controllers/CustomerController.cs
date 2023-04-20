@@ -1,4 +1,3 @@
-using customer.api.service.Model.Request;
 using customer.api.service.Model.Response;
 using customer.api.service.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -20,15 +19,13 @@ public class CustomerController : ControllerBase
     }
 
     /// <summary>
-    /// 创建玩家账号
+    /// 获取游戏列表
     /// </summary>
-    /// <param name="source"></param>
     /// <returns></returns>
-    [HttpPost]
-    [Route("Create")]
+    [HttpPost("GetGameList")]
     [Produces("application/json")]
-    public async Task<CreateResponse> CreateAsync([FromBody] CreateRequest source)
+    public async Task<GetGameListResponse> GetGameListAsync()
     {
-        return await _service.CreateAsync(source);
+        return await _service.GetGameListAsync();
     }
 }

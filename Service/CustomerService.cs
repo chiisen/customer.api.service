@@ -1,3 +1,8 @@
+using System.Diagnostics;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using _31Library;
 using customer.api.service.Model.Request;
 using customer.api.service.Model.Response;
 using Newtonsoft.Json;
@@ -9,95 +14,122 @@ public class CustomerService : ICustomerService
     private readonly ILogger<CustomerService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _apiDomain = "https://api.pg-bo.me/external/";
+    private HttpHelper _httpHelper;
 
     public CustomerService(ILogger<CustomerService> logger, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
+        _httpHelper = new HttpHelper(_httpClientFactory);
     }
 
     /// <summary>
-    /// 创建玩家账号
+    /// 获取游戏列表
     /// </summary>
-    /// <param name="source"></param>
     /// <returns></returns>
-    public async Task<CreateResponse> CreateAsync(CreateRequest source)
+    public async Task<GetGameListResponse> GetGameListAsync()
     {
-        var path = "Player/v1/Create";
-        var query = $"?trace_id={Guid.NewGuid()}";
-        var url = _apiDomain + path + query;
-
-        var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(source));
-        var response = await Post(url, dictionary);
-        return JsonConvert.DeserializeObject<CreateResponse>(response);
+        var response = await ApiHandler(new GetGameListRequest());
+        return JsonConvert.DeserializeObject<GetGameListResponse>(response);
     }
 
-    public async Task<string> Post(string url, Dictionary<string, string> postData, int retry = 3)
+    /// <summary>
+    /// API 請求
+    /// </summary>
+    private async Task<string> ApiHandler(object source)
     {
-        HttpResponseMessage? response = null;
+        var sw = new Stopwatch();
+        sw.Start();
+
+        var apiResInfo = new ApiResponseData();
+
         try
         {
-            using (var request = _httpClientFactory.CreateClient("log"))
+            var rowData = Helper.ConvertToKeyValue(source);
+            var signature = Helper.GetHMACSHA1Signature(rowData, "aghcgqczxur9a");
+
+            var apiUrl = "https://w.api788.net/" + $"?appid=THCN&signature={Uri.EscapeDataString(signature)}";
+
+            var response = await _httpHelper.Post(apiUrl, source);
+            apiResInfo.ElapsedMilliseconds = sw.ElapsedMilliseconds;
+            sw.Stop();
+
+
+            var dics = new Dictionary<string, object>
             {
-                request.Timeout = TimeSpan.FromSeconds(14);
-                var content = new FormUrlEncodedContent(postData);
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                response = await request.PostAsync(url, content);
-                sw.Stop();
-
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    //拉注單log過長截斷
-                    if (url.Contains("Bet/v4/GetHistory") && url.Length > 10000)
-                    {
-                        var reponse = body.Substring(0, 9999);
-                        var dics = new Dictionary<string, object>
-                            {
-                                { "request", JsonConvert.SerializeObject(postData) },
-                                { "response", reponse }
-                            };
-                        using (var scope = _logger.BeginScope(dics))
-                        {
-                            _logger.LogInformation("Get RequestPath: {RequestPath} | ResponseHttpStatus:{Status} | exeTime:{exeTime} ms", url, response.StatusCode, sw.Elapsed.TotalMilliseconds);
-                        }
-                    }
-                    else
-                    {
-                        var dics = new Dictionary<string, object>
-                            {
-                                { "request", JsonConvert.SerializeObject(postData) },
-                                { "response", body }
-                            };
-                        using (var scope = _logger.BeginScope(dics))
-                        {
-                            _logger.LogInformation("Get RequestPath: {RequestPath} | ResponseHttpStatus:{Status} | exeTime:{exeTime} ms", url, response.StatusCode, sw.Elapsed.TotalMilliseconds);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    var errorLine = new System.Diagnostics.StackTrace(ex, true).GetFrame(0).GetFileLineNumber();
-                    var errorFile = new System.Diagnostics.StackTrace(ex, true).GetFrame(0).GetFileName();
-                    _logger.LogError("log exception EX : {ex}  MSG : {Message} Error Line : {errorFile}.{errorLine}", ex.GetType().FullName, ex.Message, errorFile, errorLine);
-                }
-
-                return body;
+                { "request", JsonConvert.SerializeObject(source) },
+                { "response", response.body.Length > 10000 ? response.body.Substring(0, 9999):response }
+            };
+            using (var scope = _logger.BeginScope(dics))
+            {
+                _logger.LogInformation("Get RequestPath: {RequestPath} | ResponseHttpStatus:{Status} | exeTime:{exeTime} ms", apiUrl, response.statusCode, sw.Elapsed.TotalMilliseconds);
             }
+
+            return response.body;
         }
         catch (TaskCanceledException ex)
         {
+            apiResInfo.ElapsedMilliseconds = 99999;
             throw new TaskCanceledException(ex.ToString());
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
-            if (retry == 0)
+            // 响应-失败：HTTP/1.1 404 Not Found 表示 requestId 不存在
+            if (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new Exception(string.Format("Call PgApi Failed:{0}", url));
+                throw new Exception(HttpStatusCode.NotFound.ToString());
             }
 
-            return await Post(url, postData, retry - 1);
+            throw new Exception($"Call JokerApi Failed:{ex}");
         }
+    }
+}
+
+
+
+
+
+public class ApiResponseData
+{
+    public long reqDateTime { get; set; }
+    public long ElapsedMilliseconds { get; set; }
+    public ApiResponseData()
+    {
+        reqDateTime = DateTimeOffset.Now.ToUnixTimeSeconds();
+    }
+}
+
+public static class Helper
+{
+    /// <summary>
+    /// 轉換成 Key=Value
+    /// </summary>
+    public static string ConvertToKeyValue<T>(T source) where T : class
+    {
+        var type = source.GetType();
+        var properties = type.GetProperties();
+        var list = properties.OrderBy(x => x.Name).Select(x => x.Name + "=" + x.GetValue(source)).ToList();
+        return string.Join("&", list);
+    }
+
+    /// <summary>
+    /// 簽名
+    /// </summary>
+    public static string GetHMACSHA1Signature(string rawData, string secretKey)
+    {
+        using (var sha = new HMACSHA1(Encoding.UTF8.GetBytes(secretKey)))
+        {
+            var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+            return Convert.ToBase64String(hash);
+        }
+    }
+
+    public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local);
+    /// <summary>
+    /// 時間戳
+    /// </summary>
+    public static int GetCurrentTimestamp()
+    {
+        return (int)DateTime.UtcNow.Subtract(UnixEpoch).TotalSeconds;
     }
 }
