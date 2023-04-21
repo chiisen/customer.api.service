@@ -79,9 +79,9 @@ namespace customer.api.service.Middleware
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private static string FindGamePlatformName(string url)
+        private static string FindGamePlatformName(string? url)
         {
-            url ??= string.Empty;
+            _ = url ?? string.Empty;
 
             return "undefined";
         }

@@ -3,8 +3,10 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using _31Library;
+using customer.api.service.Model;
 using customer.api.service.Model.Request;
 using customer.api.service.Model.Response;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace customer.api.service.Service;
@@ -13,7 +15,6 @@ public class CustomerService : ICustomerService
 {
     private readonly ILogger<CustomerService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly string _apiDomain = "https://api.pg-bo.me/external/";
     private HttpHelper _httpHelper;
 
     public CustomerService(ILogger<CustomerService> logger, IHttpClientFactory httpClientFactory)
@@ -24,13 +25,39 @@ public class CustomerService : ICustomerService
     }
 
     /// <summary>
-    /// 获取游戏列表
+    /// 註銷用戶
     /// </summary>
-    /// <returns></returns>
-    public async Task<GetGameListResponse> GetGameListAsync()
+    public async Task<KickPlayerResponse> KickPlayerAsync(KickPlayerRequest source)
     {
-        var response = await ApiHandler(new GetGameListRequest());
-        return JsonConvert.DeserializeObject<GetGameListResponse>(response);
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<KickPlayerResponse>(response);
+    }
+
+    /// <summary>
+    /// 取得注單明細
+    /// </summary>
+    public async Task<GetBetDetailResponse> GetBetDetailAsync(GetBetDetailRequest source)
+    {
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<GetBetDetailResponse>(response);
+    }
+
+    /// <summary>
+    /// 檢索歷史 URL
+    /// </summary>
+    public async Task<GetGameHistoryUrlResponse> GetGameHistoryUrlAsync(GetGameHistoryUrlRequest source)
+    {
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<GetGameHistoryUrlResponse>(response);
+    }
+
+    /// <summary>
+    /// 檢索輸贏
+    /// </summary>
+    public async Task<GetWinLoseSummaryResponse> GetWinLoseSummaryAsync(GetWinLoseSummaryRequest source)
+    {
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<GetWinLoseSummaryResponse>(response);
     }
 
     /// <summary>
@@ -74,7 +101,7 @@ public class CustomerService : ICustomerService
         }
         catch (HttpRequestException ex)
         {
-            // 响应-失败：HTTP/1.1 404 Not Found 表示 requestId 不存在
+            // 響應-失敗：HTTP/1.1 404 Not Found 表示 requestId 不存在
             if (ex.StatusCode == HttpStatusCode.NotFound)
             {
                 throw new Exception(HttpStatusCode.NotFound.ToString());
@@ -83,53 +110,72 @@ public class CustomerService : ICustomerService
             throw new Exception($"Call JokerApi Failed:{ex}");
         }
     }
-}
 
-
-
-
-
-public class ApiResponseData
-{
-    public long reqDateTime { get; set; }
-    public long ElapsedMilliseconds { get; set; }
-    public ApiResponseData()
-    {
-        reqDateTime = DateTimeOffset.Now.ToUnixTimeSeconds();
-    }
-}
-
-public static class Helper
-{
     /// <summary>
-    /// 轉換成 Key=Value
+    /// 獲取遊戲列表
     /// </summary>
-    public static string ConvertToKeyValue<T>(T source) where T : class
+    /// <returns></returns>
+    public async Task<GetGameListResponse> GetGameListAsync()
     {
-        var type = source.GetType();
-        var properties = type.GetProperties();
-        var list = properties.OrderBy(x => x.Name).Select(x => x.Name + "=" + x.GetValue(source)).ToList();
-        return string.Join("&", list);
+        var response = await ApiHandler(new GetGameListRequest());
+        return JsonConvert.DeserializeObject<GetGameListResponse>(response);
     }
 
     /// <summary>
-    /// 簽名
+    /// 取得遊戲 Token
     /// </summary>
-    public static string GetHMACSHA1Signature(string rawData, string secretKey)
+    public async Task<GetGameTokenResponse> GetGameTokenAsync(GetGameTokenRequest source)
     {
-        using (var sha = new HMACSHA1(Encoding.UTF8.GetBytes(secretKey)))
-        {
-            var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-            return Convert.ToBase64String(hash);
-        }
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<GetGameTokenResponse>(response);
     }
 
-    public static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local);
     /// <summary>
-    /// 時間戳
+    /// 獲取信用
     /// </summary>
-    public static int GetCurrentTimestamp()
+    public async Task<GetCreditResponse> GetCreditAsync(GetCreditRequest source)
     {
-        return (int)DateTime.UtcNow.Subtract(UnixEpoch).TotalSeconds;
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<GetCreditResponse>(response);
+    }
+
+    /// <summary>
+    /// 轉移信用
+    /// </summary>
+    public async Task<TransferCreditResponse> TransferCreditAsync(TransferCreditRequest source)
+    {
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<TransferCreditResponse>(response);
+    }
+
+    /// <summary>
+    /// 驗證轉移信用
+    /// 響應 - 成功：HTTP / 1.1 200 OK
+    /// 響應-失敗：HTTP/1.1 404 Not Found 表示 requestId 不存在
+    /// </summary>
+    public async Task<ValidTransferCreditResponse> ValidTransferCreditAsync(ValidTransferCreditRequest source)
+    {
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<ValidTransferCreditResponse>(response);
+    }
+
+    /// <summary>
+    /// 提款所有信用
+    /// </summary>
+    public async Task<TransferOutAllCreditResponse> TransferOutAllCreditAsync(TransferOutAllCreditRequest source)
+    {
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<TransferOutAllCreditResponse>(response);
+    }
+
+    /// <summary>
+    /// 創建用戶
+    /// </summary>
+    public async Task<CreatePlayerResponse> CreatePlayerAsync(CreatePlayerRequest source)
+    {
+        var response = await ApiHandler(source);
+        return JsonConvert.DeserializeObject<CreatePlayerResponse>(response);
     }
 }
+
+

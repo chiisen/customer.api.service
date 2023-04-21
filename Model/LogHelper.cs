@@ -4,7 +4,7 @@ namespace customer.api.service.Model
 {
     public class LogHelper<T>
     {
-        private readonly string _projectName = Assembly.GetExecutingAssembly().GetName().Name;
+        private readonly string? _projectName = Assembly.GetExecutingAssembly().GetName().Name;
         private readonly ILogger<T> _logger;
         private readonly string _environment = "Local";
 
