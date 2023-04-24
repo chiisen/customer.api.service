@@ -168,6 +168,17 @@ public class CustomerController : ControllerBase
     /// <summary>
     /// 取得注單明細
     /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST /GetBetDetail
+    ///     {
+    ///        "StartDate": "2023-04-24 15:00",
+    ///        "EndDate": "2023-04-24 15:10",
+    ///        "NextId": "",
+    ///        "Delay": 0
+    ///     }
+    /// </remarks>
     [HttpPost("GetBetDetail")]
     [Produces("application/json")]
     public async Task<GetBetDetailResponse> GetBetDetailAsync(GetBetDetailRequest source)
@@ -178,6 +189,16 @@ public class CustomerController : ControllerBase
     /// <summary>
     /// 檢索歷史 URL
     /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST /GetGameHistoryUrl
+    ///     {
+    ///        "OCode": "s1yc3uqnaxycn",
+    ///        "Language": "en",
+    ///        "Type": "Game"
+    ///     }
+    /// </remarks>
     [HttpPost("GetGameHistoryUrl")]
     [Produces("application/json")]
     public async Task<GetGameHistoryUrlResponse> GetGameHistoryUrlAsync(GetGameHistoryUrlRequest source)
@@ -188,6 +209,16 @@ public class CustomerController : ControllerBase
     /// <summary>
     /// 檢索輸贏
     /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST /GetWinLoseSummary
+    ///     {
+    ///        "StartDate": "2023-04-24 15:00",
+    ///        "EndDate": "2023-04-24 15:10",
+    ///        "Username": "test007"
+    ///     }
+    /// </remarks>
     [HttpPost("GetWinLoseSummary")]
     [Produces("application/json")]
     public async Task<GetWinLoseSummaryResponse> GetWinLoseSummaryAsync(GetWinLoseSummaryRequest source)
