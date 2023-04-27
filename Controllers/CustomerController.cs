@@ -25,6 +25,13 @@ public class CustomerController : ControllerBase
     /// 獲取遊戲列表
     /// </summary>
     /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST /GetGameList
+    ///     {
+    ///     }
+    /// </remarks>
     [HttpPost("GetGameList")]
     [Produces("application/json")]
     public async Task<GetGameListResponse> GetGameListAsync()
