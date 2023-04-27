@@ -2,8 +2,16 @@ using customer.api.service.Middleware;
 using customer.api.service.Model;
 using customer.api.service.Service;
 using System.Reflection;
+using Serilog;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, logger) => {
+    logger
+    .ReadFrom.Configuration(context.Configuration)
+    .Enrich.FromLogContext();
+});
 
 // 開啟將註解寫到 swagger 上的設定程式碼
 # region 開啟將註解寫到 swagger 上的設定程式碼
