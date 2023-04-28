@@ -1,6 +1,6 @@
 ﻿using customer.api.service.Model;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.Diagnostics;
 using System.Net;
 using System.Text;

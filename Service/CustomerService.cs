@@ -1,13 +1,10 @@
-using System.Diagnostics;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using _31Library;
 using customer.api.service.Model;
 using customer.api.service.Model.Request;
 using customer.api.service.Model.Response;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Net;
 
 namespace customer.api.service.Service;
 

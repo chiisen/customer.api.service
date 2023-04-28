@@ -13,7 +13,8 @@ var seqJson_ = builder.Configuration.GetSection("Seq");
 builder.Host.ConfigureLogging(loggingBuilder =>
     loggingBuilder.AddSeq(seqJson_));
 
-builder.Host.UseSerilog((context, logger) => {
+builder.Host.UseSerilog((context, logger) =>
+{
     logger
     .ReadFrom.Configuration(context.Configuration)
     .Enrich.FromLogContext();

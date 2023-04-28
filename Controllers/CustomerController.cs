@@ -2,8 +2,6 @@ using customer.api.service.Model.Request;
 using customer.api.service.Model.Response;
 using customer.api.service.Service;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net;
 
 namespace customer.api.service.Controllers;
 

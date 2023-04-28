@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using customer.api.service.Service;
+using System.ComponentModel.DataAnnotations;
 
 namespace customer.api.service.Model.Request;
 
