@@ -1,9 +1,23 @@
 using customer.api.service.Middleware;
 using customer.api.service.Model;
 using customer.api.service.Service;
+using Serilog;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// 取得 appsettings.json 的 Seq 設定
+var seqJson_ = builder.Configuration.GetSection("Seq");
+
+// Use the Seq logging configuration in appsettings.json
+builder.Host.ConfigureLogging(loggingBuilder =>
+    loggingBuilder.AddSeq(seqJson_));
+
+builder.Host.UseSerilog((context, logger) => {
+    logger
+    .ReadFrom.Configuration(context.Configuration)
+    .Enrich.FromLogContext();
+});
 
 // 開啟將註解寫到 swagger 上的設定程式碼
 # region 開啟將註解寫到 swagger 上的設定程式碼
@@ -47,6 +61,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// 顯示目前的 Seq 基本設定
+string ServerUrl_ = builder.Configuration.GetValue<string>("Seq:ServerUrl");
+app.Logger.LogInformation($"目前 Seq 的 ServerUrl {ServerUrl_}");
+
+string ApiKey_ = builder.Configuration.GetValue<string>("Seq:ApiKey");
+app.Logger.LogInformation($"目前 Seq 的 ApiKey {ApiKey_}");
+
+var AppId_ = Environment.GetEnvironmentVariable("AP_ID");
+app.Logger.LogInformation($"目前的 AppId 【{AppId_}】");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
