@@ -65,13 +65,8 @@ namespace customer.api.service.Middleware
         {
             data ??= string.Empty;
 
-            var maxlength = 3000;
-            if (data.Length > maxlength)
-            {
-                return $"Log 過長已截斷，保留最大資料長度為: {maxlength}，{data.Substring(0, maxlength)}";
-            }
-
-            return data;
+            const int maxlength = 3000;
+            return data.Length > maxlength ? $"Log 過長已截斷，保留最大資料長度為: {maxlength}，{data.Substring(0, maxlength)}" : data;
         }
 
         /// <summary>

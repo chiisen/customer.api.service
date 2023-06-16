@@ -7,11 +7,11 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // 取得 appsettings.json 的 Seq 設定
-var seqJson_ = builder.Configuration.GetSection("Seq");
+var seqJson = builder.Configuration.GetSection("Seq");
 
 // Use the Seq logging configuration in appsettings.json
 builder.Host.ConfigureLogging(loggingBuilder =>
-    loggingBuilder.AddSeq(seqJson_));
+    loggingBuilder.AddSeq(seqJson));
 
 builder.Host.UseSerilog((context, logger) =>
 {
@@ -64,14 +64,14 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // 顯示目前的 Seq 基本設定
-string ServerUrl_ = builder.Configuration.GetValue<string>("Seq:ServerUrl");
-app.Logger.LogInformation($"目前 Seq 的 ServerUrl {ServerUrl_}");
+var serverUrl = builder.Configuration.GetValue<string>("Seq:ServerUrl");
+app.Logger.LogInformation($"目前 Seq 的 serverUrl 【{serverUrl}】");
 
-string ApiKey_ = builder.Configuration.GetValue<string>("Seq:ApiKey");
-app.Logger.LogInformation($"目前 Seq 的 ApiKey {ApiKey_}");
+var apiKey = builder.Configuration.GetValue<string>("Seq:ApiKey");
+app.Logger.LogInformation($"目前 Seq 的 apiKey 【{apiKey}】");
 
-var AppId_ = Environment.GetEnvironmentVariable("AP_ID");
-app.Logger.LogInformation($"目前的 AppId 【{AppId_}】");
+var appId = Environment.GetEnvironmentVariable("AP_ID");
+app.Logger.LogInformation($"目前的 appId 【{appId}】");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
