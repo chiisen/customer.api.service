@@ -15,6 +15,10 @@ namespace customer.api.service.Middleware
         {
             // 蒐集紀錄 Log 需要的資料
             var url = request.RequestUri?.ToString();
+            if (url is null)
+            {
+                throw new ArgumentNullException(nameof(url));
+            }
             var platform = FindGamePlatformName(url);
             var method = request.Method.ToString();
             var requestData = request.Content != null ? await request.Content.ReadAsStringAsync(cancellationToken) : string.Empty;

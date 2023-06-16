@@ -1,6 +1,7 @@
 using customer.api.service.Middleware;
 using customer.api.service.Model;
 using customer.api.service.Service;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using System.Reflection;
 
@@ -10,8 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 var seqJson = builder.Configuration.GetSection("Seq");
 
 // Use the Seq logging configuration in appsettings.json
-builder.Host.ConfigureLogging(loggingBuilder =>
-    loggingBuilder.AddSeq(seqJson));
+builder.Logging.AddSeq(configuration: seqJson);
 
 builder.Host.UseSerilog((context, logger) =>
 {
@@ -73,6 +73,41 @@ app.Logger.LogInformation($"目前 Seq 的 apiKey 【{apiKey}】");
 var appId = Environment.GetEnvironmentVariable("AP_ID");
 app.Logger.LogInformation($"目前的 appId 【{appId}】");
 
+
+#region loggerFormat
+
+app.Logger.LogInformation("{System} - {type}, {dbName}, {commandType}, {sqlOrSPName}, {parameters}, {response}, {executionTime}, {environment}",
+    "projectName123",
+    "DB123",
+    "dbName123",
+    "commandType123",
+    "sqlOrSPName123",
+    "parameters123",
+    "response123",
+    "elapsedMilliseconds123",
+    "EnvironmentName123");
+
+app.Logger.LogInformation("{System} - {type}, {url}, {body}, {response}, {executionTime}, {environment}",
+    "projectName123",
+    "API123",
+    "url123",
+    "body123",
+    "response123",
+    "elapsedMilliseconds123",
+    "EnvironmentName123");
+
+app.Logger.LogWarning("{System} - {type}, {url}, {body}, {response}, {environment}, {timeSpan}",
+    "projectName123",
+    "APIRetry123",
+    "url123",
+    "body123",
+    "response123",
+    "EnvironmentName123",
+    "timeSpan123");
+
+app.Logger.LogInformation("");
+
+#endregion loggerFormat
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

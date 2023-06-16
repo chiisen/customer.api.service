@@ -27,7 +27,7 @@ public class CustomerService : ICustomerService
     public async Task<KickPlayerResponse> KickPlayerAsync(KickPlayerRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<KickPlayerResponse>(response);
+        return JsonConvert.DeserializeObject<KickPlayerResponse>(response)!;
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ public class CustomerService : ICustomerService
     public async Task<GetBetDetailResponse> GetBetDetailAsync(GetBetDetailRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<GetBetDetailResponse>(response);
+        return JsonConvert.DeserializeObject<GetBetDetailResponse>(response)!;
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public class CustomerService : ICustomerService
     public async Task<GetGameHistoryUrlResponse> GetGameHistoryUrlAsync(GetGameHistoryUrlRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<GetGameHistoryUrlResponse>(response);
+        return JsonConvert.DeserializeObject<GetGameHistoryUrlResponse>(response)!;
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public class CustomerService : ICustomerService
     public async Task<GetWinLoseSummaryResponse> GetWinLoseSummaryAsync(GetWinLoseSummaryRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<GetWinLoseSummaryResponse>(response);
+        return JsonConvert.DeserializeObject<GetWinLoseSummaryResponse>(response)!;
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public class CustomerService : ICustomerService
     public async Task<GetGameListResponse> GetGameListAsync()
     {
         var response = await ApiHandler(new GetGameListRequest());
-        return JsonConvert.DeserializeObject<GetGameListResponse>(response);
+        return JsonConvert.DeserializeObject<GetGameListResponse>(response)!;
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public class CustomerService : ICustomerService
     public async Task<GetGameTokenResponse> GetGameTokenAsync(GetGameTokenRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<GetGameTokenResponse>(response);
+        return JsonConvert.DeserializeObject<GetGameTokenResponse>(response)!;
     }
 
     /// <summary>
@@ -133,7 +133,7 @@ public class CustomerService : ICustomerService
     public async Task<GetCreditResponse> GetCreditAsync(GetCreditRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<GetCreditResponse>(response);
+        return JsonConvert.DeserializeObject<GetCreditResponse>(response)!;
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ public class CustomerService : ICustomerService
     public async Task<TransferCreditResponse> TransferCreditAsync(TransferCreditRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<TransferCreditResponse>(response);
+        return JsonConvert.DeserializeObject<TransferCreditResponse>(response)!;
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ public class CustomerService : ICustomerService
     public async Task<ValidTransferCreditResponse> ValidTransferCreditAsync(ValidTransferCreditRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<ValidTransferCreditResponse>(response);
+        return JsonConvert.DeserializeObject<ValidTransferCreditResponse>(response)!;
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public class CustomerService : ICustomerService
     public async Task<TransferOutAllCreditResponse> TransferOutAllCreditAsync(TransferOutAllCreditRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<TransferOutAllCreditResponse>(response);
+        return JsonConvert.DeserializeObject<TransferOutAllCreditResponse>(response)!;
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public class CustomerService : ICustomerService
     public async Task<CreatePlayerResponse> CreatePlayerAsync(CreatePlayerRequest source)
     {
         var response = await ApiHandler(source);
-        return JsonConvert.DeserializeObject<CreatePlayerResponse>(response);
+        return JsonConvert.DeserializeObject<CreatePlayerResponse>(response)!;
     }
 }
 
