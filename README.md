@@ -11,3 +11,12 @@ customer api service 模擬自己的 API 服務串接客戶的 API 功能
 ## 補充
 - Visual Studio 2022 指定本地端 NuGet 套件來源
 ![離線安裝 NuGet 套件](https://i.imgur.com/rHldGdh.png)
+
+# git commit message
+- 常用描述
+```
+✨ feat: 需求功能描述
+🐛 fix: 修正 bug 的問題描述
+💄 optimize: 最佳化程式碼或功能流程
+🔧 chore: 雜事，例如: 調整設定檔案等等 
+```
