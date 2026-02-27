@@ -7,11 +7,7 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 取得 appsettings.json 的 Seq 設定
-var seqJson = builder.Configuration.GetSection("Seq");
-
-// Use the Seq logging configuration in appsettings.json
-builder.Logging.AddSeq(configuration: seqJson);
+// Serilog will handle logging based on appsettings.json
 
 builder.Host.UseSerilog((context, logger) =>
 {
@@ -57,9 +53,7 @@ builder.Services.AddHttpClient("log").AddHttpMessageHandler<HttpLogHandlerMiddle
 
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
