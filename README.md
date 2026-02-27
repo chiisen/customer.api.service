@@ -1,22 +1,16 @@
-# customer.api.service  
-## 介紹
-customer api service 模擬自己的 API 服務串接客戶的 API 功能  
+# 🚀 customer.api.service  
+## ✨ 介紹
+customer api service 模擬自身的 API 服務，用於串接客戶端 API 功能。 🔗
 
-## 改版紀錄
-- 新增【獲取遊戲列表】、【取得遊戲 Token】、【獲取信用】、【轉移信用】、【驗證轉移信用】、【提款所有信用】、【創建用戶】、【註銷用戶】、【取得注單明細】、【檢索歷史 URL】、【檢索輸贏】
-- 把共用的部分，提到外部 NuGet 套件 31Library 上
-- Request 中的 Timestamp 參數，預設由程式產生，看到此餐數無須填寫，避免驗證錯誤
-- Request 中的 Method 參數，預設已經設定正確，無須再次覆蓋此內容，無須填寫
+## 📝 改版紀錄
+- 🚀 升級專案至 .NET 10，享受最新效能與語法特性。
+- ✅ 新增【獲取遊戲列表】、【取得遊戲 Token】、【獲取信用】、【轉移信用】、【驗證轉移信用】、【提款所有信用】、【創建用戶】、【註銷用戶】、【取得注單明細】、【檢索歷史 URL】、【檢索輸贏】
+- 📦 將共用元件模組化，收納至外部 NuGet 套件 `31Library`。
+- 🕒 Request 中的 `Timestamp` 參數預設由程式自動產生，操作時無需手動填寫，以避免驗證錯誤。
+- 🔧 Request 中的 `Method` 參數已預設配置正確，無需重複填寫或覆蓋。
 
-## 補充
-- Visual Studio 2022 指定本地端 NuGet 套件來源
-![離線安裝 NuGet 套件](https://i.imgur.com/rHldGdh.png)
+## 💡 補充
+- 🛠️ Visual Studio 2022 指定本地端 NuGet 套件來源指標
+![離線安裝 NuGet 套件](https://i.imgur.com/rHldGdh.png) 🖼️
 
-# git commit message
-- 常用描述
-```
-✨ feat: 需求功能描述
-🐛 fix: 修正 bug 的問題描述
-💄 optimize: 最佳化程式碼或功能流程
-🔧 chore: 雜事，例如: 調整設定檔案等等 
-```
+
